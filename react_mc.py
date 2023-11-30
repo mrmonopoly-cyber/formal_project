@@ -120,17 +120,19 @@ def check_explain_react_spec(spec):
     print("start printing")
     print(spec)
 
-    x = get_base_formulas(spec)
-    print("formula right :%s" % x[0])
-    print("formula left :%s" % x[1])
+    tuple_formulas = get_base_formulas(spec)
+    print("formula right :%s" % tuple_formulas[0])
+    print("formula left :%s" % tuple_formulas[1])
 
     model = pynusmv.glob.prop_database().master.bddFsm
-    pdb.set_trace()
 
-    result = spec_to_bdd(model, spec)
-    print("result :%s" % result)
+    result_left = spec_to_bdd(model, tuple_formulas[0])
+    result_right = spec_to_bdd(model, tuple_formulas[1])
+    pdb.set_trace()
+    print("result :%s" % result_right)
+    print("result :%s" % result_left)
     print("end printing")
-    # exit(1)
+    exit(1)
 
     """
     for (i to n){
