@@ -104,47 +104,7 @@ def parse_react(spec):
     # if we are here, all conjuncts are of the correct form
     return True
 
-
-def get_base_formulas(spec):
-    if spec.type == specTypes['CONTEXT']:
-        return get_base_formulas(spec.cdr)
-    elif spec.type == specTypes['IMPLIES']:
-        return (get_base_formulas(spec.cdr), get_base_formulas(spec.car))
-    elif is_GF_formula(spec):
-        return get_base_formulas(spec.car.car)
-    elif is_boolean_formula(spec):
-        return spec
-
-
 def check_explain_react_spec(spec):
-    print("start printing")
-    print(spec)
-
-    tuple_formulas = get_base_formulas(spec)
-    print("formula right :%s" % tuple_formulas[0])
-    print("formula left :%s" % tuple_formulas[1])
-
-    model = pynusmv.glob.prop_database().master.bddFsm
-
-    result_left = spec_to_bdd(model, tuple_formulas[0])
-    result_right = spec_to_bdd(model, tuple_formulas[1])
-    pdb.set_trace()
-    print("result :%s" % result_right)
-    print("result :%s" % result_left)
-    print("end printing")
-    exit(1)
-
-    """
-    for (i to n){
-        if( f is repetable){
-            if(g is not repetable){
-                counter example
-                return false
-            }
-        }
-    }
-    return true
-    """
     """
     Returns whether the loaded SMV model satisfies or not the reactivity formula
     `spec`, that is, whether all executions of the model satisfies `spec`
@@ -163,6 +123,80 @@ def check_explain_react_spec(spec):
     """
     if not parse_react(spec):
         return None
+    
+    def retrieve_base_formulas_couples(spec):
+        # assert parse_react(spec)
+        spec = spec.cdr  # the right child of a context is the main formula
+        # extract base formulas from all conjuncts
+        couples = []
+        working = deque()
+        working.append(spec)
+        while working:
+            # next formula
+            head = working.pop()
+            if head.type == specTypes['AND']:
+                # push conjuncts into the queue
+                working.append(head.car)
+                working.append(head.cdr)
+            else:
+                # extract base formulas from implication
+                # assert parse_implication(head)
+                couples.append((head.car.car.car, head.cdr.car.car))
+        return couples
+    
+    couples = retrieve_base_formulas_couples(spec)
+
+    def check_repeatability(fsm, spec):
+        """
+        Returns a couple (True, None) if and only if
+        the property spec (which must NOT be converted bdd)
+        is repeatable basing on fsm, which is the symbolic representation
+        of the loaded NuSMV model.
+
+        Note that the second element of the couple should be
+        a counter example whenever the property is not repeatable.
+        But at the moment the computation of a counter example is not yet implemented.
+        """
+        def is_subset(first_set, second_set, fsm):
+            """
+            Returns True if and only if 
+            the first set of states is included in the second set of states
+            basing on fsm, which is the symbolic representation
+            of the loaded NuSMV model 
+            """
+            return fsm.count_states(first_set.diff(second_set)) == 0
+        bdd = spec_to_bdd(fsm, spec)
+        reach = None
+        new = fsm.init
+        while new != None:
+            reach = new if reach == None else reach.union(new)
+            new = None if is_subset(fsm.post(new), reach, fsm) else fsm.post(new).diff(reach)
+        # is_state_in_reach = False
+        # for state_1 in fsm.pick_all_states(fsm.reachable_states):
+        #     print(state_1.get_str_values())
+        #     for state_2 in fsm.pick_all_states(reach):
+        #         if state_1 == state_2:
+        #             is_state_in_reach = True
+        #             break
+        #     assert is_state_in_reach
+        #     is_state_in_reach = False
+        recur = None if not reach.intersected(bdd) else reach.intersection(bdd)
+        while recur != None:
+            reach = None
+            new = fsm.pre(recur)
+            while new != None:
+                reach = new if reach == None else reach.union(new)
+                if (is_subset(recur, reach, fsm)):
+                    # repeatable_property = pynusmv.prop.g(pynusmv.prop.f(spec))
+                    # print(str(repeatable_property))
+                    # assert pynusmv.mc.check_ltl_spec(repeatable_property) 
+                    return (True, None)
+                new = None if is_subset(fsm.pre(new), reach, fsm) else fsm.pre(new).diff(reach)
+            recur = None if not recur.intersected(reach) else recur.intersection(reach)
+        return (False, None)
+    
+    fsm = pynusmv.glob.prop_database().master.bddFsm
+
     return pynusmv.mc.check_explain_ltl_spec(spec)
 
 
