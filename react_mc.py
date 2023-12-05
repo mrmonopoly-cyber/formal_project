@@ -166,20 +166,12 @@ def check_explain_react_spec(spec):
             """
             return fsm.count_states(first_set.diff(second_set)) == 0
         bdd = spec_to_bdd(fsm, spec)
-        reach = None
+        reach = fsm.init
         new = fsm.init
         while new != None:
-            reach = new if reach == None else reach.union(new)
             new = None if is_subset(fsm.post(new), reach, fsm) else fsm.post(new).diff(reach)
-        # is_state_in_reach = False
-        # for state_1 in fsm.pick_all_states(fsm.reachable_states):
-        #     print(state_1.get_str_values())
-        #     for state_2 in fsm.pick_all_states(reach):
-        #         if state_1 == state_2:
-        #             is_state_in_reach = True
-        #             break
-        #     assert is_state_in_reach
-        #     is_state_in_reach = False
+            reach = reach if new == None else reach.union(new)
+        assert reach.equal(fsm.reachable_states)
         recur = None if not reach.intersected(bdd) else reach.intersection(bdd)
         while recur != None:
             reach = None
@@ -187,15 +179,18 @@ def check_explain_react_spec(spec):
             while new != None:
                 reach = new if reach == None else reach.union(new)
                 if (is_subset(recur, reach, fsm)):
-                    # repeatable_property = pynusmv.prop.g(pynusmv.prop.f(spec))
-                    # print(str(repeatable_property))
-                    # assert pynusmv.mc.check_ltl_spec(repeatable_property) 
+                    assert pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec))) 
                     return (True, None)
                 new = None if is_subset(fsm.pre(new), reach, fsm) else fsm.pre(new).diff(reach)
             recur = None if not recur.intersected(reach) else recur.intersection(reach)
+        assert not pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec)))     
         return (False, None)
     
     fsm = pynusmv.glob.prop_database().master.bddFsm
+
+    for couple in couples:
+        check_repeatability(fsm, couple[0])
+        check_repeatability(fsm, couple[0])
 
     return pynusmv.mc.check_explain_ltl_spec(spec)
 
