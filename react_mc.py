@@ -164,24 +164,26 @@ def check_explain_react_spec(spec):
         while fsm.count_states(new) > 0:
             # asserzione 1: 
             # fintanto che la guardia del while è vera,
-            # reach deve essere un sottoinsieme di fsm.reachable_states
-            assert reach.leq(fsm.reachable_states)
+            # reach deve essere un sottoinsieme di fsm.reachable_states.union(fsm.init)
+            assert reach.leq(fsm.reachable_states.union(fsm.init))
             new = fsm.post(new).diff(reach)
             reach = reach.union(new)
         # asserzione 2: 
         # quando il ciclo termina,
         # reach deve contenere tutti e soli gli stati di fsm.reachable_states
-        assert reach.equal(fsm.reachable_states)
+        assert reach.equal(fsm.reachable_states.union(fsm.init))
         recur = reach.intersection(bdd)
         while fsm.count_states(recur) > 0:
             reach = pynusmv.fsm.BDD.false()
+            # assert fsm.count_states(reach) == 0
             new = fsm.pre(recur)
             while fsm.count_states(new) > 0:
                 reach = reach.union(new)
-                if fsm.count_states(recur.diff(reach)) == 0:
+                if recur.leq(reach):
                     # asserzione 3:
                     # se questa procedura stabilisce che la proprietà è ripetibile,
                     # allora lo deve stabilire anche l'algoritmo "autentico" di NuSMV
+                    print("G F(%s)" % str(spec))
                     assert pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec))) 
                     return (True, None)
                 new = fsm.pre(new).diff(reach)
