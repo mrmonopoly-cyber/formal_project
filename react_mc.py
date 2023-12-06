@@ -157,42 +157,56 @@ def check_explain_react_spec(spec):
         a counter example whenever the property is not repeatable.
         But at the moment the computation of a counter example is not yet implemented.
         """
-        def is_subset(first_set, second_set, fsm):
-            """
-            Returns True if and only if 
-            the first set of states is included in the second set of states
-            basing on fsm, which is the symbolic representation
-            of the loaded NuSMV model 
-            """
-            return fsm.count_states(first_set.diff(second_set)) == 0
+
         bdd = spec_to_bdd(fsm, spec)
         reach = fsm.init
         new = fsm.init
-        while new != None:
-            new = None if is_subset(fsm.post(new), reach, fsm) else fsm.post(new).diff(reach)
-            reach = reach if new == None else reach.union(new)
+        while fsm.count_states(new) > 0:
+            # asserzione 1: 
+            # fintanto che la guardia del while è vera,
+            # reach deve essere un sottoinsieme di fsm.reachable_states
+            assert reach.leq(fsm.reachable_states)
+            new = fsm.post(new).diff(reach)
+            reach = reach.union(new)
+        # asserzione 2: 
+        # quando il ciclo termina,
+        # reach deve contenere tutti e soli gli stati di fsm.reachable_states
         assert reach.equal(fsm.reachable_states)
-        recur = None if not reach.intersected(bdd) else reach.intersection(bdd)
-        while recur != None:
-            reach = None
+        recur = reach.intersection(bdd)
+        while fsm.count_states(recur) > 0:
+            reach = pynusmv.fsm.BDD.false()
             new = fsm.pre(recur)
-            while new != None:
-                reach = new if reach == None else reach.union(new)
-                if (is_subset(recur, reach, fsm)):
+            while fsm.count_states(new) > 0:
+                reach = reach.union(new)
+                if fsm.count_states(recur.diff(reach)) == 0:
+                    # asserzione 3:
+                    # se questa procedura stabilisce che la proprietà è ripetibile,
+                    # allora lo deve stabilire anche l'algoritmo "autentico" di NuSMV
                     assert pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec))) 
                     return (True, None)
-                new = None if is_subset(fsm.pre(new), reach, fsm) else fsm.pre(new).diff(reach)
-            recur = None if not recur.intersected(reach) else recur.intersection(reach)
+                new = fsm.pre(new).diff(reach)
+            recur = recur.intersection(reach)
+        # asserzione 4:
+        # se questa procedura stabilisce che la proprietà NON è ripetibile,
+        # allora lo deve stabilire anche l'algoritmo "autentico" di NuSMV
         assert not pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec)))     
         return (False, None)
     
     fsm = pynusmv.glob.prop_database().master.bddFsm
 
     for couple in couples:
-        check_repeatability(fsm, couple[0])
-        check_repeatability(fsm, couple[0])
+        if not check_repeatability(fsm, couple[0])[0]:
+            # se la premessa non è ripetibile l'implicazione vale
+            continue
+        if not check_repeatability(fsm, couple[1])[0]:
+            # se la conclusione non è in generale ripetibile l'implicazione non vale
+            return (False, None)
 
-    return pynusmv.mc.check_explain_ltl_spec(spec)
+    # se premessa e implicazione sono entrambe ripetibili
+    # non sappiamo cosa fare
+    return ("Don't know", None)
+
+    # return pynusmv.mc.check_explain_ltl_spec(spec)
 
 
 if __name__ == "__main__":
@@ -207,7 +221,7 @@ if __name__ == "__main__":
     type_ltl = pynusmv.prop.propTypes['LTL']
     for prop in pynusmv.glob.prop_database():
         spec = prop.expr
-        print(spec)
+        # print(spec)
         if prop.type != type_ltl:
             print("property is not LTLSPEC, skipping")
             continue
@@ -218,6 +232,8 @@ if __name__ == "__main__":
             print("Property is respected")
         elif res[0] == False:
             print("Property is not respected")
-            print("Counterexample:", res[1])
+            # print("Counterexample:", res[1])
+        elif res[0] == "Don't know":
+            print("I don't know if this property is respected or not")
 
     pynusmv.init.deinit_nusmv()

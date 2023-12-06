@@ -10,7 +10,7 @@
 
    This means that we can check repeatability for both members in each couple of base formulas.
    
-   	> When i say "couple" i mean the couple formed by
+   > When i say "couple" i mean the couple formed by
 	>
 	> premise and conclusion formulas of an implication, (each of those without temporal operators)
 
@@ -38,10 +38,8 @@
 
    1. there is no implication between repeatability of the premise and repeatability of the conclusion
 
-   	> You can easily check this by running a script which adopts the "buggy" strategy
+   > You can easily check this by running a script which adopts the "buggy" strategy
 	>
 	> and comparing its output whith the outputs of the original scripts
 
    In conclusion: how the actual fuck do we solve this spicy problem?
-
-

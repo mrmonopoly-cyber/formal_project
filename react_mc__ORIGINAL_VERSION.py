@@ -136,7 +136,7 @@ if __name__ == "__main__":
     type_ltl = pynusmv.prop.propTypes['LTL']
     for prop in pynusmv.glob.prop_database():
         spec = prop.expr
-        print(spec)
+        # print(spec)
         if prop.type != type_ltl:
             print("property is not LTLSPEC, skipping")
             continue
@@ -147,6 +147,6 @@ if __name__ == "__main__":
             print("Property is respected")
         elif res[0] == False:
             print("Property is not respected")
-            print("Counterexample:", res[1])
+            # print("Counterexample:", res[1])
 
     pynusmv.init.deinit_nusmv()
