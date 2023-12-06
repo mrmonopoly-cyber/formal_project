@@ -146,7 +146,7 @@ def check_explain_react_spec(spec):
     
     couples = retrieve_base_formulas_couples(spec)
 
-    def check_repeatability(fsm, spec):
+    def check_repeatability(model, spec):
         """
         Returns a couple (True, None) if and only if
         the property spec (which must NOT be converted bdd)
@@ -158,35 +158,33 @@ def check_explain_react_spec(spec):
         But at the moment the computation of a counter example is not yet implemented.
         """
 
-        bdd = spec_to_bdd(fsm, spec)
-        reach = fsm.init
-        new = fsm.init
-        while fsm.count_states(new) > 0:
+        property = spec_to_bdd(model, spec)
+        reach = model.init
+        new = model.init
+        while model.count_states(new) > 0:
             # asserzione 1: 
             # fintanto che la guardia del while è vera,
             # reach deve essere un sottoinsieme di fsm.reachable_states.union(fsm.init)
-            assert reach.leq(fsm.reachable_states.union(fsm.init))
-            new = fsm.post(new).diff(reach)
+            assert reach.leq(model.reachable_states.union(model.init))
+            new = model.post(new).diff(reach)
             reach = reach.union(new)
         # asserzione 2: 
         # quando il ciclo termina,
-        # reach deve contenere tutti e soli gli stati di fsm.reachable_states
-        assert reach.equal(fsm.reachable_states.union(fsm.init))
-        recur = reach.intersection(bdd)
-        while fsm.count_states(recur) > 0:
-            reach = pynusmv.fsm.BDD.false()
-            # assert fsm.count_states(reach) == 0
-            new = fsm.pre(recur)
-            while fsm.count_states(new) > 0:
+        # reach deve contenere tutti e soli gli stati di fsm.reachable_states.union(fsm.init)
+        assert reach.equal(model.reachable_states.union(model.init))
+        recur = reach.intersection(property)
+        while model.count_states(recur) > 0:
+            reach = pynusmv.fsm.BDD.false() # empty
+            new = model.pre(recur)
+            while model.count_states(new) > 0:
                 reach = reach.union(new)
                 if recur.leq(reach):
                     # asserzione 3:
                     # se questa procedura stabilisce che la proprietà è ripetibile,
                     # allora lo deve stabilire anche l'algoritmo "autentico" di NuSMV
-                    print("G F(%s)" % str(spec))
                     assert pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec))) 
                     return (True, None)
-                new = fsm.pre(new).diff(reach)
+                new = model.pre(new).diff(reach)
             recur = recur.intersection(reach)
         # asserzione 4:
         # se questa procedura stabilisce che la proprietà NON è ripetibile,
@@ -194,13 +192,13 @@ def check_explain_react_spec(spec):
         assert not pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec)))     
         return (False, None)
     
-    fsm = pynusmv.glob.prop_database().master.bddFsm
+    model = pynusmv.glob.prop_database().master.bddFsm
 
     for couple in couples:
-        if not check_repeatability(fsm, couple[0])[0]:
+        if not check_repeatability(model, couple[0])[0]:
             # se la premessa non è ripetibile l'implicazione vale
             continue
-        if not check_repeatability(fsm, couple[1])[0]:
+        if not check_repeatability(model, couple[1])[0]:
             # se la conclusione non è in generale ripetibile l'implicazione non vale
             return (False, None)
 

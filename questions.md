@@ -43,3 +43,5 @@
 	> and comparing its output whith the outputs of the original scripts
 
    In conclusion: how the actual fuck do we solve this spicy problem?
+
+1. How do we deal with the fact that a formula and its negation could be both false (or true?)
