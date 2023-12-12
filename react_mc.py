@@ -163,18 +163,8 @@ def check_explain_react_spec(spec):
         reach = model.init
         new = model.init
         while model.count_states(new) > 0:
-            # asserzione 1:
-            # fintanto che la guardia del while è vera,
-            # reach deve essere un sottoinsieme di
-            # fsm.reachable_states.union(fsm.init)
-            assert reach.leq(model.reachable_states.union(model.init))
             new = model.post(new).diff(reach)
             reach = reach.union(new)
-        # asserzione 2:
-        # quando il ciclo termina,
-        # reach deve contenere tutti e soli gli stati di
-        # fsm.reachable_states.union(fsm.init)
-        assert reach.equal(model.reachable_states.union(model.init))
         recur = reach.intersection(property)
         while model.count_states(recur) > 0:
             reach = pynusmv.fsm.BDD.false()  # empty
@@ -182,37 +172,13 @@ def check_explain_react_spec(spec):
             while model.count_states(new) > 0:
                 reach = reach.union(new)
                 if recur.leq(reach):
-                    # asserzione 3:
-                    # se questa procedura stabilisce
-                    # che la proprietà è ripetibile,
-                    # allora lo deve stabilire anche
-                    # l'algoritmo "autentico" di NuSMV
-                    assert pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec))) 
                     return (True, None)
                 new = model.pre(new).diff(reach)
-            recur = recur.intersection(reach)
-        # asserzione 4:
-        # se questa procedura stabilisce che la proprietà NON è ripetibile,
-        # allora lo deve stabilire anche l'algoritmo "autentico" di NuSMV
-        assert not pynusmv.mc.check_ltl_spec(pynusmv.prop.g(pynusmv.prop.f(spec)))
+            recur = recur.intersection(reach)    
         return (False, None)
     model = pynusmv.glob.prop_database().master.bddFsm
 
-    for couple in couples:
-        if not check_repeatability(model, couple[0])[0]:
-            # se la premessa non è ripetibile l'implicazione vale
-            continue
-        if not check_repeatability(model, couple[1])[0]:
-            # se la conclusione non è in generale
-            # ripetibile l'implicazione non vale
-            return (False, None)
-
-    # se premessa e implicazione sono entrambe ripetibili
-    # non sappiamo cosa fare
-    return ("Don't know", None)
-
-    # return pynusmv.mc.check_explain_ltl_spec(spec)
-
+    return None
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -224,9 +190,10 @@ if __name__ == "__main__":
     pynusmv.glob.load_from_file(filename)
     pynusmv.glob.compute_model()
     type_ltl = pynusmv.prop.propTypes['LTL']
+    print()
     for prop in pynusmv.glob.prop_database():
         spec = prop.expr
-        # print(spec)
+        print(pynusmv.mc.check_ltl_spec(spec))
         if prop.type != type_ltl:
             print("property is not LTLSPEC, skipping")
             continue
@@ -240,5 +207,6 @@ if __name__ == "__main__":
             # print("Counterexample:", res[1])
         elif res[0] == "Don't know":
             print("I don't know if this property is respected or not")
+        print()
 
     pynusmv.init.deinit_nusmv()

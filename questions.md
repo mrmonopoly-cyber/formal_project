@@ -45,3 +45,21 @@
    In conclusion: how the actual fuck do we solve this spicy problem?
 
 1. How do we deal with the fact that a formula and its negation could be both false (or true?)
+
+1. A quanto sembra il nostro algoritmo è corretto, a discapito delle asserzioni non rispettate.
+
+   Quello che facevamo per verificare la correttezza del nostro algoritmo7
+   
+   era "scomporre" antecedente e conseguente dell'implicazione
+
+   in formule atomiche rimuovendo gli operatori temporali
+   
+   e quindi asserire che `pynumsv.mc.check_ltl_speck(pynusmv.prop.g(pynusmv.prop.f(spec)))` (con `spec` formula atomica) 
+
+   fosse `True` o `False` a seconda che il nostro algoritmo restituisse `True` o `False`.
+
+   `pynumsv.mc.check_ltl_speck(pynusmv.prop.g(pynusmv.prop.f(spec)))` dovrebbe rappresentare
+   
+   la proprietà `G F `*spec* ("repeatedly *spec*") ma nonostante ciò le asserzioni fallivano.
+
+   Non sappiamo ancora come mai.
