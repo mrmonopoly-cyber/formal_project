@@ -1,3 +1,4 @@
+from socketserver import ThreadingUDPServer
 import pynusmv
 import sys
 from pynusmv_lower_interface.nusmv.parser import parser 
@@ -104,6 +105,46 @@ def parse_react(spec):
     # if we are here, all conjuncts are of the correct form
     return True
 
+# REPEATABILITY ALGORITHM
+def check_repeatability(model, spec_f, spec_g):
+        """
+        Returns a couple (True, None) if and only if
+        the property spec (which must NOT be converted bdd)
+        is repeatable basing on fsm, which is the symbolic representation
+        of the loaded NuSMV model.
+
+        Note that the second element of the couple should be
+        a counter example whenever the property is not repeatable.
+        But at the moment the computation of a counter example is not
+        yet implemented.
+        """
+
+        f = spec_to_bdd(model, spec_f)
+        g = spec_to_bdd(model, spec_g)
+        reach = model.init
+        new = model.init
+
+        while model.count_states(new):
+            new = model.post(new).diff(reach)
+            reach = reach.union(new)
+
+        recur = (reach.intersection(f)).intersection(~g)
+        while model.count_states(recur):
+            prereach = pynusmv.fsm.BDD.false(model)  # empty
+            new = model.pre(recur).intersection(~g)
+
+            while model.count_states(new):
+                prereach = prereach.union(new)
+
+                if recur.entailed(prereach):
+                    return (False, None)
+                
+                new = (model.pre(new).intersection(~g)).diff(prereach)
+
+            recur = recur.intersection(prereach)
+
+        return (True, None)
+# END CHECK REPEATABILITY
 
 def check_explain_react_spec(spec):
     """
@@ -146,39 +187,12 @@ def check_explain_react_spec(spec):
         return couples
     couples = retrieve_base_formulas_couples(spec)
 
-    def check_repeatability(model, spec):
-        """
-        Returns a couple (True, None) if and only if
-        the property spec (which must NOT be converted bdd)
-        is repeatable basing on fsm, which is the symbolic representation
-        of the loaded NuSMV model.
-
-        Note that the second element of the couple should be
-        a counter example whenever the property is not repeatable.
-        But at the moment the computation of a counter example is not
-        yet implemented.
-        """
-
-        property = spec_to_bdd(model, spec)
-        reach = model.init
-        new = model.init
-        while model.count_states(new) > 0:
-            new = model.post(new).diff(reach)
-            reach = reach.union(new)
-        recur = reach.intersection(property)
-        while model.count_states(recur) > 0:
-            reach = pynusmv.fsm.BDD.false()  # empty
-            new = model.pre(recur)
-            while model.count_states(new) > 0:
-                reach = reach.union(new)
-                if recur.leq(reach):
-                    return (True, None)
-                new = model.pre(new).diff(reach)
-            recur = recur.intersection(reach)    
-        return (False, None)
+    
     model = pynusmv.glob.prop_database().master.bddFsm
 
-    return None
+    for couple in couples:
+        return check_repeatability(model, couple[0], couple[1])[0]
+    
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -193,20 +207,21 @@ if __name__ == "__main__":
     print()
     for prop in pynusmv.glob.prop_database():
         spec = prop.expr
-        print(pynusmv.mc.check_ltl_spec(spec))
+        print("Correct recult: ", pynusmv.mc.check_ltl_spec(spec))
         if prop.type != type_ltl:
             print("property is not LTLSPEC, skipping")
             continue
         res = check_explain_react_spec(spec)
-        if res == None:
-            print('Property is not a Reactivity formula, skipping')
-        elif res[0] == True:
-            print("Property is respected")
-        elif res[0] == False:
-            print("Property is not respected")
+        print("Our solution is: ", res)
+        #if res == None:
+        #    print('Property is not a Reactivity formula, skipping')
+        #elif res[0] == True:
+        #    print("Property is respected")
+        #elif res[0] == False:
+        #    print("Property is not respected")
             # print("Counterexample:", res[1])
-        elif res[0] == "Don't know":
-            print("I don't know if this property is respected or not")
-        print()
+        #elif res[0] == "Don't know":
+        #    print("I don't know if this property is respected or not")
+        #print()
 
     pynusmv.init.deinit_nusmv()
