@@ -1,2 +1,4 @@
 *env/
 *.whl
+
+__pycache__
