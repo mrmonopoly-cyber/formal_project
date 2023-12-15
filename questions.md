@@ -63,3 +63,7 @@
    la proprietà `G F `*spec* ("repeatedly *spec*") ma nonostante ciò le asserzioni fallivano.
 
    Non sappiamo ancora come mai.
+
+1. Ho scoperto che presso [questo link](https://spot.lre.epita.fr/app/)
+
+   è disponibile un'applicazione web per la generazione di automi di Buchi
