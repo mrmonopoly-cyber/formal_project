@@ -4,7 +4,7 @@ from collections import deque
 
 from utils import *
 from pretty_printing import *
-import pdb
+
 
 def check_explain_react_spec(spec):
 
@@ -67,13 +67,84 @@ def check_explain_react_spec(spec):
             while model.count_states(new) > 0:
                 prereach = prereach.union(new)
                 if recur.entailed(prereach):
-                    return (False, None)
+                    return (False, get_counter_example(model, recur, prereach))
                 new = ((model.pre(new)).intersection(not_g)).diff(prereach)
             recur = recur.intersection(prereach)
         return (True, None)
         # endregion
+
+    def get_counter_example(model, recur, prereach):
+        """
+        Given a system model `model` represented as a bdd
+        a region `recur` represented with a BDD
+        and a region `prereach` represented with a BDD such that:
+
+        returns a counter-example
+        """
+        s = model.pick_one_state(recur)
+        is_s_in_R = False
+        frontiers = [] # to keep track of each computed `new` in the outer loop
+
+        # region FIND_LOOP
+        while not is_s_in_R:
+            r = pynusmv.fsm.BDD.false(model)    # R ≝ { t ∈ Recur | t is reachable from s
+                                                #                   with a path of length ≥ 1
+                                                #                   entirely contained in prereach }
+            new = (model.post(s)).intersection(prereach)
+            while model.count_states(new) > 0:
+                frontiers.append(new)
+                r = r.union(new)
+                new = ((model.post(new)).intersection(prereach)).diff(r)
+            r = r.intersection(recur)
+            is_s_in_R = s.entailed(r)
+            if not is_s_in_R:
+                s = model.pick_one_state(r)
+        # endregion
+
+        # region BUILD_LOOP
+        k = 0
+        while k < len(frontiers) and not s.entailed(frontiers[k]):
+            k = k + 1
+        # assert k < len(frontiers)
+        looping_path = [(None, s, True)] # tuples of the form (${inputs}, ${state}, ${does_loop_start_here})
+        current = s
+        i = k - 1
+        while i >= 0 and not current.entailed(frontiers[i]):
+            predecessor = (model.pre(current)).intersection(frontiers[i])
+            current = model.pick_one_state(predecessor)
+            looping_path.append((model.pick_one_inputs(current), current, False))
+            i = i - 1
+        # assert i >= 0 or (i == -1 and current.entailed(frontiers[0]))
+        # endregion
+
+        # region COMPUTE_LEADING_PATH
+        reach = model.init
+        new = model.init
+        leading_path = []
+
+        while model.count_states(new) > 0:
+            leading_path.append((model.pick_one_inputs(new), model.pick_one_state(new), False))
+            new = (model.post(new)).diff(reach)
+            reach = reach.union(new)
+        # endregion
+
+        # region PASTE_LEADING_AND_LOOPING_PATH
+        leading_path = list(map(
+            lambda triple: 
+                (   triple[0].get_str_values(),
+                    triple[1].get_str_values(),
+                    triple[2]    ), leading_path))
+        
+        looping_path = list(map(
+            lambda triple: 
+                (   {} if triple[0] is None else triple[0].get_str_values(),
+                    triple[1].get_str_values(),
+                    triple[2]    ), looping_path))
     
+        return leading_path + looping_path
+        # endregion
     
+
     model = model = pynusmv.glob.prop_database().master.bddFsm
     couples = get_atomic_subformulas(spec)
 
@@ -110,5 +181,22 @@ if __name__ == "__main__":
         else:
             assert not pynusmv.mc.check_ltl_spec(spec)
             error("...property is not respected, as demonstrated by the following counterexample:")
-            
+            i = 1
+            for triple in res[1]:
+                if triple[2]:
+                    comment("# Loop starts here")
+                print("Step n.%d" % i)
+                comment("# region INPUTS")
+                print(triple[0])
+                comment("# endregion")
+                comment("# region STATE_VARIABLES")
+                print(triple[1])
+                comment("# endregion")
+                i = i + 1
+            error("Property checking stopped at the following conjunct:")
+            error("G (F %s) -> G (F %s)" % (res[2][0], res[2][1]))
+            error("This has happened since:")
+            error("1. %s is repeatable" % res[2][0])
+            error("2. the negation of %s is persistent" % res[2][1])
+
     pynusmv.init.deinit_nusmv()
