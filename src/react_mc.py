@@ -115,6 +115,7 @@ def check_explain_react_spec(spec):
             looping_path.append((model.pick_one_inputs(current), current, False))
             i = i - 1
         # assert i >= 0 or (i == -1 and current.entailed(frontiers[0]))
+        looping_path.append((None, s, False)) # since it is a looping path, first state must appear also in the end
         # endregion
 
         # region COMPUTE_LEADING_PATH
@@ -122,7 +123,7 @@ def check_explain_react_spec(spec):
         new = model.init
         leading_path = []
 
-        while model.count_states(new) > 0:
+        while not s.entailed(new):
             leading_path.append((model.pick_one_inputs(new), model.pick_one_state(new), False))
             new = (model.post(new)).diff(reach)
             reach = reach.union(new)
@@ -184,14 +185,16 @@ if __name__ == "__main__":
             i = 1
             for triple in res[1]:
                 if triple[2]:
-                    comment("# Loop starts here")
-                print("Step n.%d" % i)
-                comment("# region INPUTS")
-                print(triple[0])
-                comment("# endregion")
-                comment("# region STATE_VARIABLES")
-                print(triple[1])
-                comment("# endregion")
+                    comment("Loop starts here")
+                comment("-> State: %d <-" % i)
+                # region PRINT_INPUTS
+                for key, value in triple[0].items() :
+                    print("%s = %s" % (key, value))
+                # endregion
+                # region PRINT_STATE_VARIABLES
+                for key, value in triple[1].items() :
+                    print("%s = %s" % (key, value))
+                # endregion
                 i = i + 1
             error("Property checking stopped at the following conjunct:")
             error("G (F %s) -> G (F %s)" % (res[2][0], res[2][1]))
