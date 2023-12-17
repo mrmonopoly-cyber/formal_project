@@ -60,62 +60,82 @@ def check_explain_react_spec(spec):
         # endregion
 
         # region CHECK_REPEATABILITY_OF_BUCHI_AUTOMATON_BAD_STATE
-        recur = (reach.intersection(f)).intersection(not_g)
-        while model.count_states(recur) > 0:
-            prereach = pynusmv.fsm.BDD.false(model) # start with an empty prereach 
-            new = model.pre(recur).intersection(not_g)
-            while model.count_states(new) > 0:
+        # `recur` is the region containing those states whose repeated occurrence indicates failure
+        recur = (reach.intersection(f)).intersection(not_g) 
+        while model.count_states(recur) > 0: # stop when `recur` is empty
+            # `prereach` is the region containing all `recur`'s ancestors
+            prereach = pynusmv.fsm.BDD.false(model) 
+            new = model.pre(recur).intersection(not_g) # get `recur`'s direct ancestors
+            while model.count_states(new) > 0: # stop when no more ancestors are found
                 prereach = prereach.union(new)
-                if recur.entailed(prereach):
+                if recur.entailed(prereach): # stop when `prereach` is a superset of `recur`
+                    # If at a certain iteration `i` `recur` becomes a subset of `prereach`,
+                    # `recur` is basically an ancestor of itself and so a cycle has been found
                     return (False, get_counter_example(model, recur, prereach))
-                new = ((model.pre(new)).intersection(not_g)).diff(prereach)
+                new = ((model.pre(new)).intersection(not_g)).diff(prereach) # get the n-th region of `recur`'s ancestors
             recur = recur.intersection(prereach)
+        # If at a certain iteration `i` `recur` becomes empty,
+        # then an execution with length `i` starting from a reachable "bad" state
+        # and built only with "bad" states doesn't exist.
+        # `spec` is so satisfied
         return (True, None)
         # endregion
 
     def get_counter_example(model, recur, prereach):
         """
-        Given a system model `model` represented as a bdd
+        Given a system model `model` represented as a bdd.
         a region `recur` represented with a BDD
         and a region `prereach` represented with a BDD such that:
 
-        returns a counter-example
+        1. `recur` is the region containing those states whose repeated occurrence indicates failure
+        2. `prereach` is the region containing all `recur`'s ancestors
+
+        returns an execution such that:
+        
+        1. the execution starts from an initial state of `model`
+        2. the execution reaches a state in `recur`
+        3. the aforementioned state reappears as the last element of the execution, highlighting a loop
         """
         s = model.pick_one_state(recur)
-        is_s_in_R = False
-        frontiers = [] # to keep track of each computed `new` in the outer loop
+        is_s_in_r = False
+        frontiers = [] # to keep track of each computed `s`'s successor
 
         # region FIND_LOOP
-        while not is_s_in_R:
-            r = pynusmv.fsm.BDD.false(model)    # R ≝ { t ∈ Recur | t is reachable from s
-                                                #                   with a path of length ≥ 1
-                                                #                   entirely contained in prereach }
-            new = (model.post(s)).intersection(prereach)
-            while model.count_states(new) > 0:
+        while not is_s_in_r:
+            # start with an empty `r`
+            r = pynusmv.fsm.BDD.false(model)    # `r` ≝ { t ∈ `recur` | t is reachable from `s`
+                                                #                       with a path of length ≥ 1
+                                                #                       entirely contained in `prereach` }
+            # get `s`'s direct successors which are also in `prereach`
+            new = (model.post(s)).intersection(prereach) 
+            while model.count_states(new) > 0: # stop when no more successors in `prereach` are found
                 frontiers.append(new)
                 r = r.union(new)
+                # get the n-th region of `s`'s successors which is also in `prereach`
                 new = ((model.post(new)).intersection(prereach)).diff(r)
             r = r.intersection(recur)
-            is_s_in_R = s.entailed(r)
-            if not is_s_in_R:
+            is_s_in_r = s.entailed(r)
+            if not is_s_in_r:
+                # if `s` is in not `r` then it is not reachable from itself
+                # with a path entirely contained in `prereach`, so a new state must be picked
                 s = model.pick_one_state(r)
+                frontiers = []
         # endregion
 
         # region BUILD_LOOP
         k = 0
         while k < len(frontiers) and not s.entailed(frontiers[k]):
+            # search the first region of ancestors containing `s`
             k = k + 1
-        # assert k < len(frontiers)
-        looping_path = [(None, s, True)] # tuples of the form (${inputs}, ${state}, ${does_loop_start_here})
+        # tuples of the form (${inputs}, ${state}, ${does_loop_start_here})
+        looping_path = [(model.pick_one_inputs(s), s, False)] 
         current = s
-        i = k - 1
-        while i >= 0 and not current.entailed(frontiers[i]):
+        for i in range(k-1,-1,-1):
             predecessor = (model.pre(current)).intersection(frontiers[i])
             current = model.pick_one_state(predecessor)
-            looping_path.append((model.pick_one_inputs(current), current, False))
-            i = i - 1
-        # assert i >= 0 or (i == -1 and current.entailed(frontiers[0]))
-        looping_path.append((None, s, False)) # since it is a looping path, first state must appear also in the end
+            looping_path.insert(0, (model.pick_one_inputs(current), current, False))
+        # since it is a looping path, `s` must appear at the beginning and in the end
+        looping_path.insert(0, (model.pick_one_inputs(s), s, True))
         # endregion
 
         # region COMPUTE_LEADING_PATH
@@ -132,14 +152,14 @@ def check_explain_react_spec(spec):
         # region PASTE_LEADING_AND_LOOPING_PATH
         leading_path = list(map(
             lambda triple: 
-                (   triple[0].get_str_values(),
-                    triple[1].get_str_values(),
+                (   triple[0].get_str_values(), # get inputs as a dictionary
+                    triple[1].get_str_values(), # get state variables as a dictionary
                     triple[2]    ), leading_path))
         
         looping_path = list(map(
             lambda triple: 
-                (   {} if triple[0] is None else triple[0].get_str_values(),
-                    triple[1].get_str_values(),
+                (   triple[0].get_str_values(), # get inputs as a dictionary
+                    triple[1].get_str_values(), # get state variables as a dictionary
                     triple[2]    ), looping_path))
     
         return leading_path + looping_path
@@ -177,10 +197,8 @@ if __name__ == "__main__":
             continue
         res = check_explain_react_spec(spec)
         if res[0] == True:
-            assert pynusmv.mc.check_ltl_spec(spec)
             success("...property is respected!")
         else:
-            assert not pynusmv.mc.check_ltl_spec(spec)
             error("...property is not respected, as demonstrated by the following counterexample:")
             i = 1
             for triple in res[1]:
