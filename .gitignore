@@ -1,4 +1,11 @@
-*env/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.toc"
 *.whl
-
+*.xopp
+*env/
 __pycache__
+repeatability_pseudocode.pdf

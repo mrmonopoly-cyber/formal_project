@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{algpseudocodex}
+\usepackage{amssymb}
+\begin{document}
+\begin{algorithmic}[1]
+    \Procedure{IsRepeatable}{$\varphi$}
+    \State $ReachableStates \gets \varnothing$
+    \State $NewStates \gets InitialStates$
+    \While{\textbf{not} \Call{IsEmpty}{$NewStates$}}
+    \State $ReachableStates \gets \Call{Union}{ReachableStates, NewStates}$
+    \State $NewStates \gets \Call{Diff}{\Call{Post}{NewStates}, ReachableStates}$
+    \EndWhile
+    \State $Recurrent \gets \Call{Intersection}{ReachableStates, \varphi}$
+    \While{\textbf{not} \Call{IsEmpty}{$Recurrent$}}
+    \State $Ancestors \gets \varnothing$
+    \State $NewStates \gets \Call{Pre}{Recurrent}$
+    \While{\textbf{not} \Call{IsEmpty}{$NewStates$}}
+    \State $Ancestors \gets \Call{Union}{Ancestors, NewStates}$
+    \If{\Call{IsSubset}{$Recurrent, Ancestors$}}
+    \State \Return \textbf{True}
+    \EndIf
+    \State $NewStates \gets \Call{Diff}{\Call{Pre}{NewStates}, Ancestors}$
+    \EndWhile
+    \State $Recurrent \gets \Call{Intersection}{Recurrent, Ancestors}$
+    \EndWhile
+    \Return \textbf{False}
+    \EndProcedure
+\end{algorithmic}
+\end{document}
