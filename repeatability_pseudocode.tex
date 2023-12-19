@@ -3,25 +3,25 @@
 \usepackage{amssymb}
 \begin{document}
 \begin{algorithmic}[1]
-    \Procedure{IsRepeatable}{$\varphi$}
-    \State $ReachableStates \gets \varnothing$
-    \State $NewStates \gets InitialStates$
-    \While{\textbf{not} \Call{IsEmpty}{$NewStates$}}
-    \State $ReachableStates \gets \Call{Union}{ReachableStates, NewStates}$
-    \State $NewStates \gets \Call{Diff}{\Call{Post}{NewStates}, ReachableStates}$
+    \Procedure{IsRepeatable}{$Init, Trans, \varphi$}
+    \State $Reach \gets Init$
+    \State $New \gets Init$
+    \While{\textbf{not} \Call{IsEmpty}{$New$}}
+    \State $Reach \gets \Call{Union}{Reach, New}$
+    \State $New \gets \Call{Diff}{\Call{Post}{New, Trans}, Reach}$
     \EndWhile
-    \State $Recurrent \gets \Call{Intersection}{ReachableStates, \varphi}$
-    \While{\textbf{not} \Call{IsEmpty}{$Recurrent$}}
-    \State $Ancestors \gets \varnothing$
-    \State $NewStates \gets \Call{Pre}{Recurrent}$
-    \While{\textbf{not} \Call{IsEmpty}{$NewStates$}}
-    \State $Ancestors \gets \Call{Union}{Ancestors, NewStates}$
-    \If{\Call{IsSubset}{$Recurrent, Ancestors$}}
+    \State $Recur \gets \Call{Intersection}{Reach, \varphi}$
+    \While{\textbf{not} \Call{IsEmpty}{$Recur$}}
+    \State $PreReach \gets \varnothing$
+    \State $New \gets \Call{Pre}{Recur, Trans}$
+    \While{\textbf{not} \Call{IsEmpty}{$New$}}
+    \State $PreReach \gets \Call{Union}{PreReach, New}$
+    \If{\Call{IsSubset}{$Recur, PreReach$}}
     \State \Return \textbf{True}
     \EndIf
-    \State $NewStates \gets \Call{Diff}{\Call{Pre}{NewStates}, Ancestors}$
+    \State $New \gets \Call{Diff}{\Call{Pre}{New, Trans}, PreReach}$
     \EndWhile
-    \State $Recurrent \gets \Call{Intersection}{Recurrent, Ancestors}$
+    \State $Recur \gets \Call{Intersection}{Recur, PreReach}$
     \EndWhile
     \Return \textbf{False}
     \EndProcedure
