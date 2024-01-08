@@ -1,0 +1,9 @@
+controllable up;
+controllable down;
+controllable right;
+controllable left;
+uncontrollable unc_up;
+uncontrollable unc_down;
+uncontrollable unc_right;
+uncontrollable unc_left;
+controllable charge;

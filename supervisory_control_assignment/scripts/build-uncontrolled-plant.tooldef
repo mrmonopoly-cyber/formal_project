@@ -1,0 +1,19 @@
+// In this file we generate a single CIF specification for the whole uncontrolled plant.
+// The functionality of ESCET that we use is called "merge" and server to merge two or more CIF files.
+// https://eclipse.dev/escet/cif/tools/mergecif.html
+
+from "lib:cif" import *;
+
+// let's put all generated files in a separate directory (and let's create such a directory if it doesn't exist)
+if not exists("../generated"):
+    mkdir("../generated");
+end
+
+// merge operation
+cifmerge(
+    "../plant/Machine.cif",                     // input file
+    "../plant/Warehouse.cif",                   // input file
+     "-o ../generated/uncontrolled-plant.cif"    // output file
+);
+
+

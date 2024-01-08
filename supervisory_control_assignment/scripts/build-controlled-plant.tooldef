@@ -1,0 +1,33 @@
+// In this file we generate a single CIF specification for the whole uncontrolled plant.
+// The functionality of ESCET that we use is called "merge" and server to merge two or more CIF files.
+// https://eclipse.dev/escet/cif/tools/mergecif.html
+
+from "lib:cif" import *;
+
+tooldef("build-uncontrolled-plant.tooldef");
+
+// merge operation
+cifmerge(
+    "../generated/uncontrolled-plant.cif",                     // input file
+    "../requirements/Requirement1.cif",
+    "../requirements/Requirement2.cif",
+     "-o tmp.cif"    // output file
+);
+
+// supervisor synthesis from plant + requirements
+cifsupsynth(
+    "tmp.cif",                 // input (a single file containing all plant automata and all requirement automata)
+    "-o supervisor.cif",       // output file (supervisor)
+    "-d info.synth_dump",      // optional synthesis dump
+);
+
+rmfile("tmp.cif"); // clean-up
+
+cifmerge(
+    "../generated/uncontrolled-plant.cif",                     // input file
+    "supervisor.cif",
+     "-o ../generated/controlled-plant.cif"    // output file
+);
+
+
+//rmfile("supervisor.cif")

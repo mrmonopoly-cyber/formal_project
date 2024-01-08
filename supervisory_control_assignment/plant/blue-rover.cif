@@ -1,0 +1,99 @@
+import "events.cif";
+
+plant BlueRover:
+
+    // ****** FIRST ROW ******
+    // 1x1
+    location ONE_ONE:
+        edge down goto TWO_ONE;
+        edge right goto ONE_TWO;
+
+    // 1x2
+    location ONE_TWO:
+        edge down goto TWO_TWO;
+        edge right goto ONE_THREE;
+        edge left goto ONE_ONE;
+
+    // 1x3
+    location ONE_THREE:
+        edge down goto TWO_THREE;
+        edge right goto ONE_FOUR;
+        edge left goto ONE_TWO;
+
+    // 1x4
+    location ONE_FOUR:
+        edge down goto TWO_FOUR;
+        edge right goto ONE_FIVE;
+        edge left goto ONE_THREE;
+
+    // 1x5
+    location ONE_FIVE:
+        edge down goto TWO_FIVE;
+        edge left goto ONE_FOUR;
+
+    // ****** SECOND ROW ******
+    // 2x1
+    location TWO_ONE:
+        edge up goto ONE_ONE;
+        edge down goto THREE_ONE;
+        edge right goto TWO_TWO;
+
+    // 2x2
+    location TWO_TWO:
+        edge unc_up goto ONE_TWO;
+        edge unc_down goto THREE_TWO;
+        edge unc_right goto TWO_THREE;
+        edge unc_left goto TWO_ONE;
+
+    // 2x3
+    location TWO_THREE:
+        edge up goto ONE_THREE;
+        edge down goto THREE_THREE;
+        edge right goto TWO_FOUR;
+        edge left goto TWO_TWO;
+
+    // 2x4
+    location TWO_FOUR:
+        initial; marked;
+        edge up goto ONE_FOUR;
+        edge down goto THREE_FOUR;
+        edge right goto TWO_FIVE;
+        edge left goto TWO_THREE;
+
+    // 2x5
+    location TWO_FIVE:
+        edge up goto ONE_FIVE;
+        edge down goto THREE_FIVE;
+        edge left goto TWO_FOUR;
+
+    // ****** THIRD ROW ******
+    // 3x1
+    location THREE_ONE:
+        edge up goto TWO_ONE;
+        edge right goto THREE_TWO;
+
+    // 3x2
+    location THREE_TWO:
+        edge up goto TWO_TWO;
+        edge right goto THREE_THREE;
+        edge left goto THREE_ONE;
+
+    // 3x3
+    location THREE_THREE:
+        edge up goto TWO_THREE;
+        edge right goto THREE_FOUR;
+        edge left goto THREE_TWO;
+
+    // 3x4
+    location THREE_FOUR:
+        edge up goto TWO_FOUR;
+        edge right goto THREE_FIVE;
+        edge left goto THREE_THREE;
+
+    // 3x5
+    location THREE_FIVE:
+        edge up goto TWO_FIVE;
+        edge left goto THREE_FOUR;
+end
+
+svgfile "grid.svg";
