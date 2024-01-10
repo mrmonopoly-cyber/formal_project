@@ -1,0 +1,2 @@
+find . -type d -regex ".*generated" -exec rm -r {} \;
+find . -type f -regex ".*info\.synth_dump\|.*supervisor\.cif" -exec rm {} \;

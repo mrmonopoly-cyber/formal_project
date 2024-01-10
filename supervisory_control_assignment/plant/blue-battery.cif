@@ -3,78 +3,79 @@ import "events.cif";
 plant BlueBattey:
     location FULL:
         initial; marked;
-        edge up goto FIVE;
-        edge down goto FIVE;
-        edge left goto FIVE;
-        edge right goto FIVE;
-        edge unc_up goto FIVE;
-        edge unc_down goto FIVE;
-        edge unc_left goto FIVE;
-        edge unc_right goto FIVE;
-        edge charge goto FULL;
+        edge up_blue goto FIVE;
+        edge down_blue goto FIVE;
+        edge left_blue goto FIVE;
+        edge right_blue goto FIVE;
+        edge unc_up_blue goto FIVE;
+        edge unc_down_blue goto FIVE;
+        edge unc_left_blue goto FIVE;
+        edge unc_right_blue goto FIVE;
+        edge charge_blue goto FULL;
 
     location FIVE:
         marked;
-        edge up goto FOUR;
-        edge down goto FOUR;
-        edge left goto FOUR;
-        edge right goto FOUR;
-        edge unc_up goto FOUR;
-        edge unc_down goto FOUR;
-        edge unc_left goto FOUR;
-        edge unc_right goto FOUR;
-        edge charge goto FULL;
+        edge up_blue goto FOUR;
+        edge down_blue goto FOUR;
+        edge left_blue goto FOUR;
+        edge right_blue goto FOUR;
+        edge unc_up_blue goto FOUR;
+        edge unc_down_blue goto FOUR;
+        edge unc_left_blue goto FOUR;
+        edge unc_right_blue goto FOUR;
+        edge charge_blue goto FULL;
 
     location FOUR:
         marked;
-        edge up goto THREE;
-        edge down goto THREE;
-        edge left goto THREE;
-        edge right goto THREE;
-        edge unc_up goto THREE;
-        edge unc_down goto THREE;
-        edge unc_left goto THREE;
-        edge unc_right goto THREE;
-        edge charge goto FULL;
+        edge up_blue goto THREE;
+        edge down_blue goto THREE;
+        edge left_blue goto THREE;
+        edge right_blue goto THREE;
+        edge unc_up_blue goto THREE;
+        edge unc_down_blue goto THREE;
+        edge unc_left_blue goto THREE;
+        edge unc_right_blue goto THREE;
+        edge charge_blue goto FULL;
 
      location THREE:
         marked;
-        edge up goto TWO;
-        edge down goto TWO;
-        edge left goto TWO;
-        edge right goto TWO;
-        edge unc_up goto TWO;
-        edge unc_down goto TWO;
-        edge unc_left goto TWO;
-        edge unc_right goto TWO;
-        edge charge goto FULL;
+        edge up_blue goto TWO;
+        edge down_blue goto TWO;
+        edge left_blue goto TWO;
+        edge right_blue goto TWO;
+        edge unc_up_blue goto TWO;
+        edge unc_down_blue goto TWO;
+        edge unc_left_blue goto TWO;
+        edge unc_right_blue goto TWO;
+        edge charge_blue goto FULL;
 
      location TWO:
         marked;
-        edge up goto ONE;
-        edge down goto ONE;
-        edge left goto ONE;
-        edge right goto ONE;
-        edge unc_up goto ONE;
-        edge unc_down goto ONE;
-        edge unc_left goto ONE;
-        edge unc_right goto ONE;
-        edge charge goto FULL;
+        edge up_blue goto ONE;
+        edge down_blue goto ONE;
+        edge left_blue goto ONE;
+        edge right_blue goto ONE;
+        edge unc_up_blue goto ONE;
+        edge unc_down_blue goto ONE;
+        edge unc_left_blue goto ONE;
+        edge unc_right_blue goto ONE;
+        edge charge_blue goto FULL;
 
      location ONE:
         marked;
-        edge up goto EMPTY;
-        edge down goto EMPTY;
-        edge left goto EMPTY;
-        edge right goto EMPTY;
-        edge unc_up goto EMPTY;
-        edge unc_down goto EMPTY;
-        edge unc_left goto EMPTY;
-        edge unc_right goto EMPTY;
-        edge charge goto FULL;
+        edge up_blue goto EMPTY;
+        edge down_blue goto EMPTY;
+        edge left_blue goto EMPTY;
+        edge right_blue goto EMPTY;
+        edge unc_up_blue goto EMPTY;
+        edge unc_down_blue goto EMPTY;
+        edge unc_left_blue goto EMPTY;
+        edge unc_right_blue goto EMPTY;
+        edge charge_blue goto FULL;
 
      location EMPTY:
-        edge charge goto FULL;
+        edge charge_blue goto FULL;
+
 end
 
 svgfile "grid.svg";
