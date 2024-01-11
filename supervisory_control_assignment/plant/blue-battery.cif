@@ -1,6 +1,6 @@
 import "events.cif";
 
-plant BlueBattey:
+plant BlueBattery:
     location FULL:
         initial; marked;
         edge up_blue goto FIVE;
@@ -79,3 +79,39 @@ plant BlueBattey:
 end
 
 svgfile "grid.svg";
+
+svgout id "Rover2SixthBattery" attr "visibility" value  if BlueBattery.FULL:
+                                                            "visible"
+                                                        else
+                                                            "hidden"
+                                                        end;
+
+svgout id "Rover2FifthBattery" attr "visibility" value  if BlueBattery.FULL or BlueBattery.FIVE:
+                                                            "visible"
+                                                        else
+                                                            "hidden"
+                                                        end;
+
+svgout id "Rover2FourthBattery" attr "visibility" value  if BlueBattery.FULL or BlueBattery.FIVE or BlueBattery.FOUR:
+                                                            "visible"
+                                                        else
+                                                            "hidden"
+                                                        end;
+
+svgout id "Rover2ThirdBattery" attr "visibility" value  if BlueBattery.TWO or BlueBattery.ONE or BlueBattery.EMPTY:
+                                                            "hidden"
+                                                        else
+                                                            "visible"
+                                                        end;
+
+svgout id "Rover2SecondBattery" attr "visibility" value  if BlueBattery.ONE or BlueBattery.EMPTY:
+                                                            "hidden"
+                                                        else
+                                                            "visible"
+                                                        end;
+
+svgout id "Rover2FirstBattery" attr "visibility" value if BlueBattery.EMPTY:
+                                                            "hidden"
+                                                        else
+                                                            "visible"
+                                                        end;

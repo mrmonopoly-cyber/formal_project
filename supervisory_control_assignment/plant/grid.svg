@@ -912,7 +912,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192507,0.20437657,-0.37602572,-0.00104631,191.67627,96.337865)" />
     <path
-       style="fill:#000000;fill-opacity:0.77060932;stroke:url(#linearGradient26);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover2FirstBattery"
        width="58.084869"
        height="16.439116"
@@ -923,7 +923,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        inkscape:path-effect="#path-effect25-0" />
     <path
-       style="fill:#000000;fill-opacity:0.86738354;stroke:url(#linearGradient27);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover2ThirdBattery"
        width="58.084869"
        height="16.439116"
@@ -934,7 +934,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,164.1407,96.337865)" />
     <path
-       style="fill:#000000;fill-opacity:0.81003582;stroke:url(#linearGradient28);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover2SecondBattery"
        width="58.084869"
        height="16.439116"
@@ -945,7 +945,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,154.7997,96.337865)" />
     <path
-       style="fill:#000000;fill-opacity:0.91756272;stroke:url(#linearGradient29);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover2FourthBattery"
        width="58.084869"
        height="16.439116"
@@ -956,7 +956,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,173.5797,96.337865)" />
     <path
-       style="fill:#000000;fill-opacity:0.96057349;stroke:url(#linearGradient30);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover2FifthBattery"
        width="58.084869"
        height="16.439116"
@@ -991,7 +991,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="translate(-65.894505,9.6252441e-5)" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:url(#linearGradient34);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover1SixthBattery"
        width="58.084869"
        height="16.439116"
@@ -1002,7 +1002,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192507,0.20437657,-0.37602572,-0.00104631,125.78176,96.674102)" />
     <path
-       style="fill:#000000;fill-opacity:0.770609;stroke:url(#linearGradient35);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover1FirstBattery"
        width="58.084869"
        height="16.439116"
@@ -1013,7 +1013,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        inkscape:path-effect="#path-effect25-0-1" />
     <path
-       style="fill:#000000;fill-opacity:0.867384;stroke:url(#linearGradient36);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover1ThirdBattery"
        width="58.084869"
        height="16.439116"
@@ -1024,7 +1024,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,98.246195,96.674102)" />
     <path
-       style="fill:#000000;fill-opacity:0.810036;stroke:url(#linearGradient37);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover1SecondBattery"
        width="58.084869"
        height="16.439116"
@@ -1035,7 +1035,7 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,88.905195,96.674102)" />
     <path
-       style="fill:#000000;fill-opacity:0.917563;stroke:url(#linearGradient38);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
        id="Rover1FourthBattery"
        width="58.084869"
        height="16.439116"
@@ -1046,8 +1046,8 @@
        d="m 97.046443,112.9529 51.238277,0 a 3.4613225,3.4613225 45 0 1 3.46132,3.46133 v 9.59252 a 3.3852724,3.3852724 135 0 1 -3.38527,3.38527 H 96.690189 A 3.0290182,3.0290182 45 0 1 93.661171,126.363 v -10.02482 a 3.3852724,3.3852724 135 0 1 3.385272,-3.38528 z"
        transform="matrix(-0.00192227,0.20437657,-0.37547804,-0.00104631,107.68519,96.674102)" />
     <path
-       style="fill:#000000;fill-opacity:0.960574;stroke:url(#linearGradient39);stroke-width:2.16589;stroke-miterlimit:3.7;stroke-dasharray:none"
-       id="Rover1FourthBattery"
+       style="fill:#000100;fill-opacity:1;stroke:url(#linearGradient31);stroke-width:2.16432;stroke-miterlimit:3.7;stroke-dasharray:none"
+       id="Rover1FifthBattery"
        width="58.084869"
        height="16.439116"
        x="93.661171"

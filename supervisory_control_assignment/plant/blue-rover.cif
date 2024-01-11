@@ -7,6 +7,7 @@ plant BlueRover:
     location ONE_ONE: marked;
         edge down_blue goto TWO_ONE;
         edge right_blue goto ONE_TWO;
+        edge charge_blue;
 
     // 1x2
     location ONE_TWO: marked;
@@ -58,6 +59,7 @@ plant BlueRover:
         edge down_blue goto THREE_FOUR;
         edge right_blue goto TWO_FIVE;
         edge left_blue goto TWO_THREE;
+        edge charge_blue;
 
     // 2x5
     location TWO_FIVE: marked;
@@ -96,3 +98,30 @@ plant BlueRover:
 end
 
 svgfile "grid.svg";
+
+svgout id "blueRover" attr "cx" value if BlueRover.ONE_ONE or BlueRover.TWO_ONE or BlueRover.THREE_ONE :
+                                            "38.175407"
+                                        elif BlueRover.ONE_TWO or BlueRover.TWO_TWO or BlueRover.THREE_TWO :
+                                            "64.175407"
+                                        elif BlueRover.ONE_THREE or BlueRover.TWO_THREE or BlueRover.THREE_THREE :
+                                            "90.175407"
+                                        elif BlueRover.ONE_FOUR or BlueRover.TWO_FOUR or BlueRover.THREE_FOUR:
+                                            "116.175407"
+                                        elif BlueRover.ONE_FIVE or BlueRover.TWO_FIVE or BlueRover.THREE_FIVE:
+                                            "142.175407"
+                                        else
+                                            "cx"
+                                        end;
+
+svgout id "blueRover" attr "cy" value if  BlueRover.ONE_ONE or BlueRover.ONE_TWO or BlueRover.ONE_THREE
+                                            or BlueRover.ONE_FOUR or BlueRover.ONE_FIVE:
+                                            "37.810093"
+                                        elif BlueRover.TWO_ONE or BlueRover.TWO_TWO or BlueRover.TWO_THREE
+                                            or BlueRover.TWO_FOUR or BlueRover.TWO_FIVE:
+                                            "63.810093"
+                                        elif BlueRover.THREE_ONE or BlueRover.THREE_TWO or BlueRover.THREE_THREE
+                                            or BlueRover.THREE_FOUR or BlueRover.THREE_FIVE:
+                                            "89.810093"
+                                        else
+                                            "cy"
+                                        end;

@@ -7,6 +7,7 @@ plant YellowRover:
     location ONE_ONE: initial; marked;
         edge down_yellow goto TWO_ONE;
         edge right_yellow goto ONE_TWO;
+        edge charge_yellow;
 
     // 1x2
     location ONE_TWO: marked;
@@ -58,6 +59,7 @@ plant YellowRover:
         edge down_yellow goto THREE_FOUR;
         edge right_yellow goto TWO_FIVE;
         edge left_yellow goto TWO_THREE;
+        edge charge_yellow;
 
     // 2x5
     location TWO_FIVE: marked;
@@ -100,13 +102,26 @@ svgfile "grid.svg";
 svgout id "yellowRover" attr "cx" value if YellowRover.ONE_ONE or YellowRover.TWO_ONE or YellowRover.THREE_ONE :
                                             "38.175407"
                                         elif YellowRover.ONE_TWO or YellowRover.TWO_TWO or YellowRover.THREE_TWO :
-                                            "38.175407"
-                                        elif YellowRover.ONE_THREE :
-                                            "38.175407"
-                                        elif YellowRover.ONE_FOUR :
-                                            "38.175407"
-                                        elif YellowRover.ONE_FIVE :
-                                            "38.175407"
+                                            "64.175407"
+                                        elif YellowRover.ONE_THREE or YellowRover.TWO_THREE or YellowRover.THREE_THREE :
+                                            "90.175407"
+                                        elif YellowRover.ONE_FOUR or YellowRover.TWO_FOUR or YellowRover.THREE_FOUR:
+                                            "116.175407"
+                                        elif YellowRover.ONE_FIVE or YellowRover.TWO_FIVE or YellowRover.THREE_FIVE:
+                                            "142.175407"
                                         else
-                                            "38.175407"
+                                            "cx"
+                                        end;
+
+svgout id "yellowRover" attr "cy" value if  YellowRover.ONE_ONE or YellowRover.ONE_TWO or YellowRover.ONE_THREE
+                                            or YellowRover.ONE_FOUR or YellowRover.ONE_FIVE:
+                                            "37.810093"
+                                        elif YellowRover.TWO_ONE or YellowRover.TWO_TWO or YellowRover.TWO_THREE
+                                            or YellowRover.TWO_FOUR or YellowRover.TWO_FIVE:
+                                            "63.810093"
+                                        elif YellowRover.THREE_ONE or YellowRover.THREE_TWO or YellowRover.THREE_THREE
+                                            or YellowRover.THREE_FOUR or YellowRover.THREE_FIVE:
+                                            "89.810093"
+                                        else
+                                            "cy"
                                         end;
