@@ -5,122 +5,122 @@ plant BlueRover:
     // ****** FIRST ROW ******
     // 1x1
     location ONE_ONE: marked;
-        edge down_blue goto TWO_ONE;
-        edge right_blue goto ONE_TWO;
+        edge down_blue goto ONE_TWO;
+        edge right_blue goto TWO_ONE;
         edge charge_blue;
 
-    // 1x2
-    location ONE_TWO: marked;
-        edge down_blue goto TWO_TWO;
-        edge right_blue goto ONE_THREE;
-        edge left_blue goto ONE_ONE;
-
-    // 1x3
-    location ONE_THREE: marked;
-        edge down_blue goto TWO_THREE;
-        edge right_blue goto ONE_FOUR;
-        edge left_blue goto ONE_TWO;
-
-    // 1x4
-    location ONE_FOUR: marked;
-        edge down_blue goto TWO_FOUR;
-        edge right_blue goto ONE_FIVE;
-        edge left_blue goto ONE_THREE;
-
-    // 1x5
-    location ONE_FIVE: marked;
-        edge down_blue goto TWO_FIVE;
-        edge left_blue goto ONE_FOUR;
-
-    // ****** SECOND ROW ******
     // 2x1
     location TWO_ONE: marked;
+        edge down_blue goto TWO_TWO;
+        edge right_blue goto THREE_ONE;
+        edge left_blue goto ONE_ONE;
+
+    // 3x1
+    location THREE_ONE: marked;
+        edge down_blue goto THREE_TWO;
+        edge right_blue goto FOUR_ONE;
+        edge left_blue goto TWO_ONE;
+
+    // 4x1
+    location FOUR_ONE: marked;
+        edge down_blue goto FOUR_TWO;
+        edge right_blue goto FIVE_ONE;
+        edge left_blue goto THREE_ONE;
+
+    // 5x1
+    location FIVE_ONE: marked;
+        edge down_blue goto FIVE_TWO;
+        edge left_blue goto FOUR_ONE;
+
+    // ****** SECOND ROW ******
+    // 1x2
+    location ONE_TWO: marked;
         edge up_blue goto ONE_ONE;
-        edge down_blue goto THREE_ONE;
+        edge down_blue goto ONE_THREE;
         edge right_blue goto TWO_TWO;
 
     // 2x2
     location TWO_TWO: marked;
-        edge unc_up_blue goto ONE_TWO;
-        edge unc_down_blue goto THREE_TWO;
-        edge unc_right_blue goto TWO_THREE;
-        edge unc_left_blue goto TWO_ONE;
-
-    // 2x3
-    location TWO_THREE: marked;
-        edge up_blue goto ONE_THREE;
-        edge down_blue goto THREE_THREE;
-        edge right_blue goto TWO_FOUR;
-        edge left_blue goto TWO_TWO;
-
-    // 2x4
-    location TWO_FOUR: initial; marked;
-        edge up_blue goto ONE_FOUR;
-        edge down_blue goto THREE_FOUR;
-        edge right_blue goto TWO_FIVE;
-        edge left_blue goto TWO_THREE;
-        edge charge_blue;
-
-    // 2x5
-    location TWO_FIVE: marked;
-        edge up_blue goto ONE_FIVE;
-        edge down_blue goto THREE_FIVE;
-        edge left_blue goto TWO_FOUR;
-
-    // ****** THIRD ROW ******
-    // 3x1
-    location THREE_ONE: marked;
-        edge up_blue goto TWO_ONE;
-        edge right_blue goto THREE_TWO;
+        edge unc_up_blue goto TWO_ONE;
+        edge unc_down_blue goto TWO_THREE;
+        edge unc_right_blue goto THREE_TWO;
+        edge unc_left_blue goto ONE_TWO;
 
     // 3x2
     location THREE_TWO: marked;
+        edge up_blue goto THREE_ONE;
+        edge down_blue goto THREE_THREE;
+        edge right_blue goto FOUR_TWO;
+        edge left_blue goto TWO_TWO;
+
+    // 4x2
+    location FOUR_TWO: initial; marked;
+        edge up_blue goto FOUR_ONE;
+        edge down_blue goto FOUR_THREE;
+        edge right_blue goto FIVE_TWO;
+        edge left_blue goto THREE_TWO;
+        edge charge_blue;
+
+    // 5x2
+    location FIVE_TWO: marked;
+        edge up_blue goto FIVE_ONE;
+        edge down_blue goto FIVE_THREE;
+        edge left_blue goto FOUR_TWO;
+
+    // ****** THIRD ROW ******
+    // 1x3
+    location ONE_THREE: marked;
+        edge up_blue goto ONE_TWO;
+        edge right_blue goto TWO_THREE;
+
+    // 2x3
+    location TWO_THREE: marked;
         edge up_blue goto TWO_TWO;
         edge right_blue goto THREE_THREE;
-        edge left_blue goto THREE_ONE;
+        edge left_blue goto ONE_THREE;
 
     // 3x3
     location THREE_THREE: marked;
-        edge up_blue goto TWO_THREE;
-        edge right_blue goto THREE_FOUR;
-        edge left_blue goto THREE_TWO;
+        edge up_blue goto THREE_TWO;
+        edge right_blue goto FOUR_THREE;
+        edge left_blue goto TWO_THREE;
 
-    // 3x4
-    location THREE_FOUR: marked;
-        edge up_blue goto TWO_FOUR;
-        edge right_blue goto THREE_FIVE;
+    // 4x3
+    location FOUR_THREE: marked;
+        edge up_blue goto FOUR_TWO;
+        edge right_blue goto FIVE_THREE;
         edge left_blue goto THREE_THREE;
 
-    // 3x5
-    location THREE_FIVE: marked;
-        edge up_blue goto TWO_FIVE;
-        edge left_blue goto THREE_FOUR;
+    // 5x3
+    location FIVE_THREE: marked;
+        edge up_blue goto FIVE_TWO;
+        edge left_blue goto FOUR_THREE;
 end
 
 svgfile "grid.svg";
 
-svgout id "blueRover" attr "cx" value if BlueRover.ONE_ONE or BlueRover.TWO_ONE or BlueRover.THREE_ONE :
+svgout id "blueRover" attr "cx" value if BlueRover.ONE_ONE or BlueRover.ONE_TWO or BlueRover.ONE_THREE :
                                             "38.175407"
-                                        elif BlueRover.ONE_TWO or BlueRover.TWO_TWO or BlueRover.THREE_TWO :
+                                        elif BlueRover.TWO_ONE or BlueRover.TWO_TWO or BlueRover.TWO_THREE :
                                             "64.175407"
-                                        elif BlueRover.ONE_THREE or BlueRover.TWO_THREE or BlueRover.THREE_THREE :
+                                        elif BlueRover.THREE_ONE or BlueRover.THREE_TWO or BlueRover.THREE_THREE :
                                             "90.175407"
-                                        elif BlueRover.ONE_FOUR or BlueRover.TWO_FOUR or BlueRover.THREE_FOUR:
+                                        elif BlueRover.FOUR_ONE or BlueRover.FOUR_TWO or BlueRover.FOUR_THREE:
                                             "116.175407"
-                                        elif BlueRover.ONE_FIVE or BlueRover.TWO_FIVE or BlueRover.THREE_FIVE:
+                                        elif BlueRover.FIVE_ONE or BlueRover.FIVE_TWO or BlueRover.FIVE_THREE:
                                             "142.175407"
                                         else
                                             "cx"
                                         end;
 
-svgout id "blueRover" attr "cy" value if  BlueRover.ONE_ONE or BlueRover.ONE_TWO or BlueRover.ONE_THREE
-                                            or BlueRover.ONE_FOUR or BlueRover.ONE_FIVE:
+svgout id "blueRover" attr "cy" value if  BlueRover.ONE_ONE or BlueRover.TWO_ONE or BlueRover.THREE_ONE
+                                            or BlueRover.FOUR_ONE or BlueRover.FIVE_ONE:
                                             "37.810093"
-                                        elif BlueRover.TWO_ONE or BlueRover.TWO_TWO or BlueRover.TWO_THREE
-                                            or BlueRover.TWO_FOUR or BlueRover.TWO_FIVE:
+                                        elif BlueRover.ONE_TWO or BlueRover.TWO_TWO or BlueRover.THREE_TWO
+                                            or BlueRover.FOUR_TWO or BlueRover.FIVE_TWO:
                                             "63.810093"
-                                        elif BlueRover.THREE_ONE or BlueRover.THREE_TWO or BlueRover.THREE_THREE
-                                            or BlueRover.THREE_FOUR or BlueRover.THREE_FIVE:
+                                        elif BlueRover.ONE_THREE or BlueRover.TWO_THREE or BlueRover.THREE_THREE
+                                            or BlueRover.FOUR_THREE or BlueRover.FIVE_THREE:
                                             "89.810093"
                                         else
                                             "cy"

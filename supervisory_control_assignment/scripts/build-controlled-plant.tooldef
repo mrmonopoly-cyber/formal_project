@@ -9,6 +9,9 @@ tooldef("build-uncontrolled-plant.tooldef");
 // merge operation
 cifmerge(
     "../generated/uncontrolled-plant.cif", // input file
+    "../requirements/Requirement2A.cif",   // input file
+    "../requirements/Requirement2B.cif",   // input file
+    "../requirements/Requirement3.cif",    // input file
      "-o tmp.cif"                          // output file
 );
 
