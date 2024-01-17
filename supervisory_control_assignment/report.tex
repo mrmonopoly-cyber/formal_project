@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{color}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    filecolor=blue,      
+    linkcolor=blue,
+    urlcolor=blue,
+}
+\usepackage{parskip}
+\title{Supervisory control assignment}
+\author{Alberto Damo, Alessandro Pirolo, Pietro Zenezini}
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\section{Introduction}
+The aim of the project is to model a plant
+where a yellow and a blue rover move on a 3 $\times$ 5 grid.
+
+$(1,1)$ represents the leftmost topmost tile, whereas $(5,3)$ the rightmost downmost one.
+
+All of the movements are controllable, except for the ones
+occurring on $(2,2)$.
+
+Each rover has six units of energy in its battery and looses one of those
+whenever it moves.
+
+The grid has two charging stations at tiles $(1,1)$ and $(4,2)$
+and rovers can charge their batteries whenever they reach those tiles.
+
+The whole plant should respect these requirements:
+\begin{enumerate}
+    \item ``Both rovers never run our of battery on tiles that do not have a charging station"
+    \item ``Both rovers must always alternate the use of the charging stations in $(1,1)$ and $(4,2)$ regardless of which is used first"
+    \item ``Rovers don't collide with each other" (i.e., they are never simultaneously on a same tile)
+\end{enumerate}
+
+\section{Plant}
+\subsection{Rovers}
+Each rover is modelled by a finite-state automaton
+where each state represents a tile of the grid.
+The initial state represents the tile where the rover begins its path.
+For the yellow rover initial state is $(1,1)$, whereas
+for the blue one is $(4,2)$.
+Every state is marked.
+
+If the rover can reach a tile $(x', y')$ from a tile $(x, y)$
+making a specific movement, then there is an edge labelled
+with that movement from state $(x, y)$ to state $(x', y')$.
+
+\paragraph{Example}
+\textit{State encoding initial tile for the yellow rover}
+\begin{verbatim}
+location ONE_ONE: initial; marked;
+    edge down_yellow goto ONE_TWO;
+    edge right_yellow goto TWO_ONE;
+    edge charge_yellow;
+\end{verbatim}
+
+\newpage
+
+\subsection{Batteries}
+Each battery is modelled by a finite-state automaton
+where each state represents an energy level of the whole charge.
+The initial state represents full charge and is the only marked one.
+
+Every state has an edge to the one encoding the next minor energy level
+for each of the rover's moves
+and an edge to the initial state for the charge event.
+
+\paragraph{Example}
+\textit{State encoding full charge for the yellow rover}
+\begin{verbatim}
+location FULL: initial; marked;
+    edge up_yellow goto FIVE;
+    edge down_yellow goto FIVE;
+    edge left_yellow goto FIVE;
+    edge right_yellow goto FIVE;
+    edge unc_up_yellow goto FIVE;
+    edge unc_down_yellow goto FIVE;
+    edge unc_left_yellow goto FIVE;
+    edge unc_right_yellow goto FIVE;
+    edge charge_yellow goto FULL;
+\end{verbatim}
+
+\section{Requirements}
+
+\subsection{Requirement 1}
+Since the only marked state for the battery automaton
+is the one representing full charge,
+any sequence of events which leads the system to a configuration
+where a battery is not fully charged is not allowed.
+So is the supervisor synthesis algorithm itself which enforces the
+requirement by removing all the edges which may cause those executions.
+In other words, there is no need to provide an explicit automaton for this requirement.
+
+\subsection{Requirement 2}
+Requirement is decomposed in two sub requirements, namely:
+\begin{enumerate}
+    \item ``Yellow rover must always alternate the use of the charging stations [...]''
+    \item ``Blue rover must always alternate the use of the charging stations [...]''
+\end{enumerate}
+The automatons for the two requirements are isomorphic.
+
+Each automaton has three sets of states:
+\begin{enumerate}
+    \item The one tracking the fact that rover has not charged its battery yet
+    \item The one tracking the fact that rover has charged its battery in $(1,1)$
+    \item The one tracking the fact that rover has charged its battery in $(4,2)$
+\end{enumerate}
+
+The first set is a copy of the rover automaton, but slightly modified.
+As a matter of fact whenever a rover uses a charging station in $(x, y)$
+the automaton enters the set of state which tracks that event.
+In that set edges labelled with charging events are allowed only
+for the tile where the unused charging station is.
+
+\paragraph{Example}
+\textit{Some snippets from the sub-requirement for the yellow rover}
+\begin{verbatim}
+location ONE_ONE: initial; marked;
+    edge right_yellow goto TWO_ONE;
+    edge down_yellow goto ONE_TWO;
+    edge charge_yellow goto ONE_ONE__CHARGED_A;
+\end{verbatim}
+[...]
+\begin{verbatim}
+    location ONE_ONE__CHARGED_A: marked;
+        edge right_yellow goto TWO_ONE;
+        edge down_yellow goto ONE_TWO;
+\end{verbatim}
+[...]
+\begin{verbatim}
+location FOUR_TWO__CHARGED_A: marked;
+    edge left_yellow goto THREE_TWO__CHARGED_A;
+    edge right_yellow goto FIVE_TWO__CHARGED_A;
+    edge up_yellow goto FOUR_ONE__CHARGED_A;
+    edge down_yellow goto FOUR_THREE__CHARGED_A;
+    edge charge_yellow goto FOUR_TWO__CHARGED_B;
+\end{verbatim}
+[...]
+
+\textit{Note that the automaton is automatically generated by a JavaScript program}
+
+\subsection{Requirement 3}
+In order to respect this requirement, two conditions must always be verified in the system
+\begin{enumerate}
+    \item Rovers must not ``share" the same tile
+    \item If a rover is on tile $(2,2)$, then the other one cannot be in an adjacent tile,
+          since movements from $(2,2)$ are uncontrollable and so a collision with the adjacent rover may happen
+\end{enumerate}
+Each state of the automaton enforcing this requirment is of the form
+
+$(x_{y}, y_{y}, x_{b}, y_{b})$, where:
+\begin{itemize}
+    \item $x_{y}$ and $y_{y}$ encode the yellow rover's coordinates
+    \item $x_{b}$ and $y_{b}$ encode the blue rover's coordinates
+\end{itemize}
+
+\newpage
+
+Each state is such that
+\begin{enumerate}
+    \item $x_{y} \neq x_{b} \land y_{y} \neq y_{b}$
+    \item No edge which leads to ``dangerous'' configurations starts from it
+\end{enumerate}
+
+\textit{Note that the automaton is automatically generated by a JavaScript program,
+    which basically checks all the possible coordinate configurations
+    and discards all the edges leading to the ``wrong" ones according to the specified constraints.
+}
+
+\end{document}

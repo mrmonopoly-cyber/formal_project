@@ -99,7 +99,7 @@ const events = [
 
 const subsetIdentifiers = ["", "__CHARGED_A", "__CHARGED_B"];
 
-const isForBlue = false; //modify this to get requirement for the desired rover
+const isForBlue = false; // modify this to get requirement for the desired rover
 
 console.log("import \"../plant/events.cif\";");
 console.log("requirement Requirement2: /* choose either 2A or 2B*/");
